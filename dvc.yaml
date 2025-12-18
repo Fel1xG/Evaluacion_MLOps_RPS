@@ -1,0 +1,17 @@
+stages:
+  entrenar:
+    cmd: python src/train.py
+    deps:
+      - data/rps
+      - src/train.py
+      - src/config.py
+    outs:
+      - models/modelo_rps.pth
+
+  convertir:
+    cmd: python src/convert.py
+    deps:
+      - models/modelo_rps.pth
+      - src/convert.py
+    outs:
+      - models/modelo_rps.onnx

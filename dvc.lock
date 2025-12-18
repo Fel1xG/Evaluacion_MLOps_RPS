@@ -1,0 +1,39 @@
+schema: '2.0'
+stages:
+  entrenar:
+    cmd: python src/train.py
+    deps:
+    - path: data/rps
+      hash: md5
+      md5: 6ea1fe25edea2ab044b2098b1e2c0c11.dir
+      size: 163705389
+      nfiles: 2188
+    - path: src/config.py
+      hash: md5
+      md5: 64ac844ab181c9c38ec91d39db8b3992
+      size: 260
+    - path: src/train.py
+      hash: md5
+      md5: 30aea239ebb911ece01b8d34d082ab65
+      size: 2203
+    outs:
+    - path: models/modelo_rps.pth
+      hash: md5
+      md5: f3e91269683397ab6a30905d711a6d31
+      size: 6503415
+  convertir:
+    cmd: python src/convert.py
+    deps:
+    - path: models/modelo_rps.pth
+      hash: md5
+      md5: f3e91269683397ab6a30905d711a6d31
+      size: 6503415
+    - path: src/convert.py
+      hash: md5
+      md5: b3ba218fa8ad098a912c6044f98e6251
+      size: 714
+    outs:
+    - path: models/modelo_rps.onnx
+      hash: md5
+      md5: 9f13e6d724faf157d83a27a7beb70cae
+      size: 12209
