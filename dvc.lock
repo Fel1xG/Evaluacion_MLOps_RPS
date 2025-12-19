@@ -10,30 +10,30 @@ stages:
       nfiles: 2188
     - path: src/config.py
       hash: md5
-      md5: 64ac844ab181c9c38ec91d39db8b3992
-      size: 260
+      md5: 069ea6f48fdb97e183452e9b73917001
+      size: 221
     - path: src/train.py
       hash: md5
-      md5: 30aea239ebb911ece01b8d34d082ab65
-      size: 2203
+      md5: e572d163f5a21a5487bd3364da83ce97
+      size: 1817
     outs:
     - path: models/modelo_rps.pth
       hash: md5
-      md5: f3e91269683397ab6a30905d711a6d31
+      md5: ba4aca3cb5e5cb87ab2327cf2491d174
       size: 6503415
   convertir:
     cmd: python src/convert.py
     deps:
     - path: models/modelo_rps.pth
       hash: md5
-      md5: f3e91269683397ab6a30905d711a6d31
+      md5: ba4aca3cb5e5cb87ab2327cf2491d174
       size: 6503415
     - path: src/convert.py
       hash: md5
-      md5: b3ba218fa8ad098a912c6044f98e6251
-      size: 714
+      md5: 03fc59886594f0c3b77b02c47bc9528b
+      size: 529
     outs:
     - path: models/modelo_rps.onnx
       hash: md5
-      md5: 9f13e6d724faf157d83a27a7beb70cae
-      size: 12209
+      md5: 01f078819012fb9034073398b4119d7b
+      size: 12041

@@ -24,7 +24,7 @@ HTML = """
     </style>
 </head>
 <body>
-    <h2>Modelo ONNX en Producción</h2>
+    <h2>MLOps - PIEDRA - PAPEL - TIJERA</h2>
     <div>
         <video id="video" autoplay playsinline></video>
         <canvas id="canvas" width="64" height="64" style="display:none;"></canvas>
