@@ -15,7 +15,7 @@ HTML = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>MLOps Demo PIEDRA - PAPEL - TIJERA</title>
+    <title>MLOps - PIEDRA - PAPEL - TIJERA</title>
     <style>
         body { font-family: sans-serif; padding: 20px; text-align: center; }
         #video { border: 1px solid #ccc; width: 320px; height: 320px; }
