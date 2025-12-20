@@ -33,10 +33,10 @@ if __name__ == "__main__":
         transforms.Resize((CONFIG['img_size'], CONFIG['img_size'])),
         transforms.ToTensor(),
     ])
-
+    
     dataset = datasets.ImageFolder(CONFIG['data_path'], transform=transform)
     loader = DataLoader(dataset, batch_size=CONFIG['batch_size'], shuffle=True)
-
+    print("ORDEN REAL DE CLASES:", dataset.class_to_idx)
     device = torch.device("cpu")
     model = Net().to(device)
     optimizer = optim.Adam(model.parameters(), lr=CONFIG['learning_rate'])

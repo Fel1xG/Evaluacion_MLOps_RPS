@@ -10,34 +10,34 @@ stages:
       nfiles: 1298
     - path: src/config.py
       hash: md5
-      md5: f3af4ccefd33e132d32f2b5a52e7cd86
+      md5: 490c789a6781e45f94641ad5f9e676c6
       size: 686
     - path: src/train.py
       hash: md5
-      md5: d9ea8967283df64af8af25678972c286
-      size: 1796
+      md5: 31277216781443997172929466d4081b
+      size: 1856
     outs:
     - path: models/modelo_animales.pth
       hash: md5
-      md5: 0274e1046f84796e88f24e0fab77d635
+      md5: c509ffcb492f5fc80b0594da4d56fc4f
       size: 6507325
   convertir:
     cmd: python src/convert.py
     deps:
     - path: models/modelo_animales.pth
       hash: md5
-      md5: 0274e1046f84796e88f24e0fab77d635
+      md5: c509ffcb492f5fc80b0594da4d56fc4f
       size: 6507325
     - path: src/config.py
       hash: md5
-      md5: f3af4ccefd33e132d32f2b5a52e7cd86
+      md5: 490c789a6781e45f94641ad5f9e676c6
       size: 686
     - path: src/convert.py
       hash: md5
-      md5: 5e5d86383a392cd5878f71625cf1898c
-      size: 1074
+      md5: c791c0a873ee15493588e98d9edf5505
+      size: 810
     outs:
     - path: models/modelo_animales.onnx
       hash: md5
-      md5: 4cc1b849e64ddcf1e27c754151de4426
+      md5: 7bc0f8c2b9cd6855f59cd6e6f9c79ed9
       size: 12078
