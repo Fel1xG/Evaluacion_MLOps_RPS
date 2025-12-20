@@ -48,7 +48,7 @@ HTML = """
             const data = await res.json();
             
             document.getElementById('result').innerText = 
-                `Clase: ${data.clase}\nHábitat: ${data.habitat}\nPeligroso: ${data.peligro}\nConfianza: ${data.prob}`;
+                `Clase: ${data.clase}\nHábitat: ${data.habitat}\nPeligroso: ${data.peligro}\nScore (Accuracy): ${data.prob}`;
         }
     </script>
 </body>

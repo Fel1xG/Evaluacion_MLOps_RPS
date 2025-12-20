@@ -21,7 +21,6 @@ def convert():
         output_names=['output'],
         dynamic_axes={'input': {0: 'batch_size'}, 'output': {0: 'batch_size'}}
     )
-    print(f"Modelo convertido a ONNX guardado en: {CONFIG['onnx_path']}")
 
 if __name__ == "__main__":
     convert()

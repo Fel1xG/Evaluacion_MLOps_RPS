@@ -1,4 +1,4 @@
 [core]
     remote = almacenamiento_local
 ['remote "almacenamiento_local"']
-    url = C:\Users\felix\OneDrive\Escritorio\Nube_DVC
+    url = C:\Users\felix\OneDrive\Escritorio\nube_dvc_animales

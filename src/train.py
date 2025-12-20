@@ -31,12 +31,16 @@ class Net(nn.Module):
 if __name__ == "__main__":
     transform = transforms.Compose([
         transforms.Resize((CONFIG['img_size'], CONFIG['img_size'])),
+        transforms.RandomHorizontalFlip(p=0.5),
+        transforms.RandomRotation(15),
+        transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2),
         transforms.ToTensor(),
     ])
-    
+
     dataset = datasets.ImageFolder(CONFIG['data_path'], transform=transform)
-    loader = DataLoader(dataset, batch_size=CONFIG['batch_size'], shuffle=True)
     print("ORDEN REAL DE CLASES:", dataset.class_to_idx)
+    loader = DataLoader(dataset, batch_size=CONFIG['batch_size'], shuffle=True)
+
     device = torch.device("cpu")
     model = Net().to(device)
     optimizer = optim.Adam(model.parameters(), lr=CONFIG['learning_rate'])

@@ -10,7 +10,7 @@ CONFIG = {
     'img_size': 64,
     'batch_size': 16,
     'learning_rate': 0.001,
-    'epochs': 30,
+    'epochs': 50,
     'classes': [
         'no_peligrosos_acuaticos',
         'no_peligrosos_aereos',
