@@ -10,10 +10,10 @@ from config import CONFIG
 class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(1, 32, 3, 1)
+        self.conv1 = nn.Conv2d(3, 32, 3, 1)
         self.conv2 = nn.Conv2d(32, 64, 3, 1)
         self.fc1 = nn.Linear(64 * 14 * 14, 128)
-        self.fc2 = nn.Linear(128, 3)
+        self.fc2 = nn.Linear(128, len(CONFIG['classes']))
 
     def forward(self, x):
         x = self.conv1(x)
@@ -31,7 +31,6 @@ class Net(nn.Module):
 if __name__ == "__main__":
     transform = transforms.Compose([
         transforms.Resize((CONFIG['img_size'], CONFIG['img_size'])),
-        transforms.Grayscale(),
         transforms.ToTensor(),
     ])
 
@@ -51,7 +50,7 @@ if __name__ == "__main__":
             loss = criterion(output, target)
             loss.backward()
             optimizer.step()
-        print(f"Epoch {epoch+1} finished")
+        print(f"Epoch {epoch+1}")
 
     os.makedirs(os.path.dirname(CONFIG['model_path']), exist_ok=True)
     torch.save(model.state_dict(), CONFIG['model_path'])

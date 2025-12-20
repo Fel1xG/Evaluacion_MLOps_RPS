@@ -3,71 +3,52 @@ import onnxruntime as ort
 import numpy as np
 from PIL import Image
 import io
-import base64
 from config import CONFIG
 
 app = Flask(__name__)
 
 ort_session = ort.InferenceSession(CONFIG['onnx_path'])
-clases = ['Papel', 'Piedra', 'Tijera']
+clases = CONFIG['classes']
 
 HTML = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>MLOps - PIEDRA - PAPEL - TIJERA</title>
+    <title>Clasificador</title>
     <style>
         body { font-family: sans-serif; padding: 20px; text-align: center; }
-        #video { border: 1px solid #ccc; width: 320px; height: 320px; }
-        .container { margin-top: 20px; }
-        #result { font-weight: bold; font-size: 24px; margin-top: 10px; }
+        #preview { max-width: 300px; display: none; margin: 20px auto; }
+        #result { font-weight: bold; margin-top: 20px; white-space: pre-line; }
     </style>
 </head>
 <body>
-    <h2>MLOps - PIEDRA - PAPEL - TIJERA</h2>
-    <div>
-        <video id="video" autoplay playsinline></video>
-        <canvas id="canvas" width="64" height="64" style="display:none;"></canvas>
-    </div>
-    <div class="container">
-        <button onclick="startCamera()">Activar Cámara</button>
-        <div id="result">Esperando predicción...</div>
-    </div>
+    <h2>Sistema de Clasificacion</h2>
+    <input type="file" id="fileInput" accept="image/*" onchange="preview()">
+    <button onclick="upload()">Analizar</button>
+    <img id="preview">
+    <div id="result"></div>
 
     <script>
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-        const resultDiv = document.getElementById('result');
-
-        async function startCamera() {
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                    video.srcObject = stream;
-                    setInterval(sendFrame, 500); 
-                } catch (error) {
-                    alert("Error accediendo a la cámara: " + error.message);
-                }
-            } else {
-                alert("Tu navegador no soporta acceso a medios o no estás en localhost.");
-            }
+        function preview() {
+            const file = document.getElementById('fileInput').files[0];
+            const reader = new FileReader();
+            reader.onload = e => {
+                document.getElementById('preview').src = e.target.result;
+                document.getElementById('preview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
         }
 
-        function sendFrame() {
-            ctx.drawImage(video, 0, 0, 64, 64);
-            const dataURL = canvas.toDataURL('image/jpeg');
+        async function upload() {
+            const file = document.getElementById('fileInput').files[0];
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const res = await fetch('/predict', { method: 'POST', body: formData });
+            const data = await res.json();
             
-            fetch('/predict', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ image: dataURL })
-            })
-            .then(response => response.json())
-            .then(data => {
-                resultDiv.innerText = data.label + " (" + data.prob + ")";
-            })
-            .catch(error => console.error('Error:', error));
+            document.getElementById('result').innerText = 
+                `Clase: ${data.clase}\nHábitat: ${data.habitat}\nPeligroso: ${data.peligro}\nConfianza: ${data.prob}`;
         }
     </script>
 </body>
@@ -75,10 +56,11 @@ HTML = """
 """
 
 def preprocess(image_bytes):
-    img = Image.open(io.BytesIO(image_bytes)).convert('L')
+    img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
     img = img.resize((CONFIG['img_size'], CONFIG['img_size']))
     img_arr = np.array(img).astype(np.float32) / 255.0
-    img_arr = img_arr.reshape(1, 1, CONFIG['img_size'], CONFIG['img_size'])
+    img_arr = img_arr.transpose(2, 0, 1)
+    img_arr = img_arr.reshape(1, 3, CONFIG['img_size'], CONFIG['img_size'])
     return img_arr
 
 def softmax(x):
@@ -91,22 +73,25 @@ def index():
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    try:
-        data = request.json['image']
-        header, encoded = data.split(",", 1)
-        image_bytes = base64.b64decode(encoded)
-        
-        input_tensor = preprocess(image_bytes)
-        outputs = ort_session.run(None, {"input": input_tensor})
-        probs = softmax(outputs[0][0])
-        idx = np.argmax(probs)
-        
-        return jsonify({
-            'label': clases[idx],
-            'prob': f"{probs[idx]*100:.1f}%"
-        })
-    except:
-        return jsonify({'label': 'Error', 'prob': '0%'})
+    file = request.files['file']
+    img_bytes = file.read()
+    input_tensor = preprocess(img_bytes)
+    outputs = ort_session.run(None, {"input": input_tensor})
+    probs = softmax(outputs[0][0])
+    idx = np.argmax(probs)
+    
+    clase_raw = clases[idx]
+    parts = clase_raw.split('_')
+    
+    peligro = "NO" if "no" in parts else "SI"
+    habitat = parts[-1].upper()
+
+    return jsonify({
+        'clase': clase_raw,
+        'peligro': peligro,
+        'habitat': habitat,
+        'prob': f"{probs[idx]:.4f}"
+    })
 
 if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=5000)
+    app.run(host='0.0.0.0', port=5000)

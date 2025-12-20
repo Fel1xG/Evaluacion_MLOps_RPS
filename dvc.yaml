@@ -2,16 +2,17 @@ stages:
   entrenar:
     cmd: python src/train.py
     deps:
-      - data/rps
+      - data/animales       # <--- Antes era data/rps
       - src/train.py
       - src/config.py
     outs:
-      - models/modelo_rps.pth
+      - models/modelo_animales.pth  # <--- Nuevo nombre
 
   convertir:
     cmd: python src/convert.py
     deps:
-      - models/modelo_rps.pth
+      - models/modelo_animales.pth
       - src/convert.py
+      - src/config.py
     outs:
-      - models/modelo_rps.onnx
+      - models/modelo_animales.onnx # <--- Nuevo nombre

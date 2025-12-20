@@ -3,37 +3,41 @@ stages:
   entrenar:
     cmd: python src/train.py
     deps:
-    - path: data/rps
+    - path: data/animales
       hash: md5
-      md5: 6ea1fe25edea2ab044b2098b1e2c0c11.dir
-      size: 163705389
-      nfiles: 2188
+      md5: 8ab271ef23dacd7de04701894290a7e0.dir
+      size: 209659843
+      nfiles: 1298
     - path: src/config.py
       hash: md5
-      md5: 069ea6f48fdb97e183452e9b73917001
-      size: 221
+      md5: f3af4ccefd33e132d32f2b5a52e7cd86
+      size: 686
     - path: src/train.py
       hash: md5
-      md5: e572d163f5a21a5487bd3364da83ce97
-      size: 1817
+      md5: d9ea8967283df64af8af25678972c286
+      size: 1796
     outs:
-    - path: models/modelo_rps.pth
+    - path: models/modelo_animales.pth
       hash: md5
-      md5: ba4aca3cb5e5cb87ab2327cf2491d174
-      size: 6503415
+      md5: 0274e1046f84796e88f24e0fab77d635
+      size: 6507325
   convertir:
     cmd: python src/convert.py
     deps:
-    - path: models/modelo_rps.pth
+    - path: models/modelo_animales.pth
       hash: md5
-      md5: ba4aca3cb5e5cb87ab2327cf2491d174
-      size: 6503415
+      md5: 0274e1046f84796e88f24e0fab77d635
+      size: 6507325
+    - path: src/config.py
+      hash: md5
+      md5: f3af4ccefd33e132d32f2b5a52e7cd86
+      size: 686
     - path: src/convert.py
       hash: md5
-      md5: 03fc59886594f0c3b77b02c47bc9528b
-      size: 529
+      md5: 5e5d86383a392cd5878f71625cf1898c
+      size: 1074
     outs:
-    - path: models/modelo_rps.onnx
+    - path: models/modelo_animales.onnx
       hash: md5
-      md5: 01f078819012fb9034073398b4119d7b
-      size: 12041
+      md5: 4cc1b849e64ddcf1e27c754151de4426
+      size: 12078

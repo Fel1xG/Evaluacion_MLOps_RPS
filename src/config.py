@@ -1,9 +1,22 @@
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 CONFIG = {
-    'batch_size': 32,
-    'learning_rate': 0.001,
-    'epochs': 5,
+    'data_path': os.path.join(BASE_DIR, 'data', 'animales'),
+    'models_dir': os.path.join(BASE_DIR, 'models'),
+    'model_path': os.path.join(BASE_DIR, 'models', 'modelo_animales.pth'),
+    'onnx_path': os.path.join(BASE_DIR, 'models', 'modelo_animales.onnx'),
     'img_size': 64,
-    'model_path': 'models/modelo_rps.pth',
-    'onnx_path': 'models/modelo_rps.onnx',
-    'data_path': 'data/rps'
+    'batch_size': 16,
+    'learning_rate': 0.001,
+    'epochs': 15,
+    'classes': [
+        'no_peligrosos_acuaticos',
+        'no_peligrosos_aereos',
+        'no_peligrosos_terrestres',
+        'peligrosos_acuaticos',
+        'peligrosos_aereos',
+        'peligrosos_terrestres'
+    ]
 }

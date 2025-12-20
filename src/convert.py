@@ -1,16 +1,36 @@
 import torch
 import torch.onnx
-from config import CONFIG
 from train import Net
-import onnxscript
+from config import CONFIG
+import os
 
-if __name__ == "__main__":
-    model = Net()
-    model.load_state_dict(torch.load(CONFIG['model_path']))
+def convert():
+    # 1. Cargar el modelo entrenado
+    device = torch.device("cpu")
+    model = Net().to(device)
+    
+    # Cargar los pesos guardados (modelo_animales.pth)
+    model.load_state_dict(torch.load(CONFIG['model_path'], map_location=device))
     model.eval()
 
-    dummy_input = torch.randn(1, 1, CONFIG['img_size'], CONFIG['img_size'])
+    # 2. Crear una "imagen falsa" para configurar ONNX
+    # IMPORTANTE: Ahora es (1, 3, 64, 64) porque usamos 3 canales (RGB)
+    dummy_input = torch.randn(1, 3, CONFIG['img_size'], CONFIG['img_size'])
 
-    torch.onnx.export(model, dummy_input, CONFIG['onnx_path'],
-                      input_names=['input'], output_names=['output'],
-                      dynamic_axes={'input': {0: 'batch'}, 'output': {0: 'batch'}})
+    # 3. Exportar a ONNX
+    torch.onnx.export(
+        model, 
+        dummy_input, 
+        CONFIG['onnx_path'], 
+        export_params=True,
+        opset_version=11,
+        do_constant_folding=True,
+        input_names=['input'],
+        output_names=['output'],
+        dynamic_axes={'input': {0: 'batch_size'}, 'output': {0: 'batch_size'}}
+    )
+    
+    print(f"Modelo convertido a ONNX guardado en: {CONFIG['onnx_path']}")
+
+if __name__ == "__main__":
+    convert()
